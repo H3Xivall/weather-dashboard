@@ -136,6 +136,7 @@ function displayWeather(i) {
             fiveDayDates = `${moment.unix(date.dt).format('MM/DD/YYYY')}`;
             if (eachDay === '' && eachDay !== moment().format('MM/DD/YYYY')) {
                 const fiveDayGen = document.createElement('div');
+                fiveDayGen.classList.add('card');
                 fiveDayGen.innerHTML = `
                     <h2>Date: ${moment.unix(date.dt).format('MM/DD/YYYY')}</h2>
                     <ul>
