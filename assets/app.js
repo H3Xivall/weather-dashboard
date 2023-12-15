@@ -9,6 +9,8 @@ const fiveDay = document.querySelector('#five-day-forecast');
 let searchData = [];
 let localHist = JSON.parse(localStorage.getItem('history')) || [];
 let clickHist = [];
+let forecastData = [];
+let fiveDayDates = [];
 
 const searchTxt = document.createElement('input');
 const searchBtn = document.createElement('button');
@@ -59,11 +61,20 @@ function getWeather(lat, lon) {
                 localStorage.setItem('history', JSON.stringify(searchData));
                 histList.innerHTML = '';
                 histLGen();
+                displayWeather();
             });
         } else {
             console.log('Error: getWeather(): ' + response.statusText);
         };
     });
+    const fiveDayUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&cnt=5&appid=${weatherApiKey}`;
+    fetch(fiveDayUrl).then(function(response) {
+        if (response.ok) {
+            response.json().then(function(data) {
+                forecastData = data;
+            })
+        }
+    })
 };
 function getCityLL() {
     histList.innerHTML = '';
@@ -95,4 +106,43 @@ function getCityLL() {
             console.log('Error: getAreaLL(): ' + response.statusText);
         };
     });
+};
+function displayWeather() {
+    const curData = searchData.reverse();
+    forecastData = forecastData;
+    curWeather.innerHTML = '';
+    fiveDay.innerHTML = '';
+    curWeather.classList.add('card');
+    curWeather.innerHTML = `
+        <h1>Current Weather</h1>
+        <h2>${curData[0].name}, ${curData[0].sys.country}</h2>
+        <h3>Date: ${moment.unix(curData[0].dt).format('MM/DD/YYYY')}</h3>
+        <li>Humidity: ${curData[0].main.humidity}%</li>
+        <li>Wind Speed: ${curData[0].wind.speed} mph</li>
+        <li>Temperature: ${Math.round((curData[0].main.temp - 273.15) * 9/5 + 32)}°F</li>
+        <li>Weather: ${curData[0].weather[0].description}</li>
+        </ul>`;
+    fiveDayGen.classList.add('card');
+    fiveDay.innerHTML = `<h1>Five Day Forecast</h1>`;
+    forecastData.list.forEach(function(date) {
+        console.log(date.dt_txt.slice(0, 10));
+        fiveDayDates.push(date.dt_txt.slice(0, 10));
+        
+        // if (!fiveDayDates || !fiveDayDates.includes(date.dt_txt.slice(0, 10))){
+        //     const fiveDayGen = document.createElement('div');
+        //     fiveDayGen.classList.add('card');
+        //     fiveDayGen.innerHTML = `
+        //     <h2>Date: ${moment.unix(forecastData.list[date].dt_txt).format('MM/DD/YYYY HH:MM:SS')}</h2>
+        //     <ul>
+        //         <li>Weather: ${forecastData.list[date].weather[0].description}</li>
+        //         <li>Icon: <img src="http://openweathermap.org/img/w/${forecastData.list[date].weather[0].icon}.png"></li>
+        //         <li>Temperature: ${Math.round((forecastData.list[date].main.temp - 273.15) * 9/5 + 32)}°F</li>
+        //         <li>Humidity: ${forecastData.list[date].main.humidity}%</li>
+        //         <li>Wind Speed: ${forecastData.list[date].wind.speed} mph</li>
+        //         </ul>`;
+        //     fiveDay.appendChild(fiveDayGen);
+        // } else {
+        //     return;
+        // }
+    })
 };
