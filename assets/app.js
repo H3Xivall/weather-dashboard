@@ -117,6 +117,7 @@ function displayWeather() {
         <h1>Current Weather</h1>
         <h2>${curData[0].name}, ${curData[0].sys.country}</h2>
         <h3>Date: ${moment.unix(curData[0].dt).format('MM/DD/YYYY')}</h3>
+        <li>Icon: <img src="http://openweathermap.org/img/w/${forecastData.list[date].weather[0].icon}.png"></li>
         <li>Humidity: ${curData[0].main.humidity}%</li>
         <li>Wind Speed: ${curData[0].wind.speed} mph</li>
         <li>Temperature: ${Math.round((curData[0].main.temp - 273.15) * 9/5 + 32)}°F</li>
